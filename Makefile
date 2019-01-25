@@ -2,7 +2,7 @@
 # add -I/usr/pkg/include and -L/usr/pkg/lib to the options
 # below.
 CFLAGS += -std=c99 -pedantic -Wall -Wextra
-LDLIBS = -lncurses
+LDLIBS = -lncurses -ltinfo
 PREFIX = /usr/local
 MANPREFIX = $(PREFIX)/man
 
