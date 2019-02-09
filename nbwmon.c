@@ -52,6 +52,7 @@ struct iface {
 char *argv0;
 bool colors = true;
 bool siunits = false;
+bool bits = false;
 bool minimum = false;
 bool globalmax = false;
 double delay = 1.0;
@@ -102,6 +103,50 @@ size_t arrayresize(unsigned long **array, size_t newsize, size_t oldsize) {
 }
 
 char *bytestostr(double bytes) {
+	int i;
+	int cols;
+	double rxtx;
+	static char buf[32];
+	static const char iec[][4] = { "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB" };
+	static const char si[][3] = { "B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+	static const char iecbit[][6] = { "Bit", "KiBit", "MiBit", "GiBit", "TiBit", "PiBit", "EiBit", "ZiBit", "YiBit" };
+	static const char sibit[][5] = { "Bit", "kBit", "MBit", "GBit", "TBit", "PBit", "EBit", "ZBit", "YBit" };
+	double prefix;
+	const char *suffix;
+
+	if (siunits) {
+		prefix = 1000.0;
+		cols = LEN(si);
+	} else {
+		prefix = 1024.0;
+		cols = LEN(iec);
+	}
+
+	if (bits) {
+		rxtx = bytes * 8;
+	} else {
+		rxtx = bytes;
+	}
+
+	for (i = 0; rxtx >= prefix && i < cols; i++)
+		rxtx /= prefix;
+
+	if (!siunits && !bits) {
+		suffix = iec[i];
+	} else if (siunits && !bits) {
+		suffix = si[i];
+	} else if (!siunits && bits) {
+		suffix = iecbit[i];
+	} else if (siunits && bits) {
+		suffix = sibit[i];
+	}
+
+	snprintf(buf, sizeof(buf), i ? "%.2f %s" : "%.0f %s", rxtx, suffix);
+
+	return buf;
+}
+
+char *bytestostrtotal(double bytes) {
 	int i;
 	int cols;
 	static char buf[32];
@@ -350,7 +395,7 @@ void printstatsw(WINDOW *win, char *name,
 	mvwprintw(win, 4, 1, "Minimum:");
 	printrightw(win, "%s/s", bytestostr(min));
 	mvwprintw(win, 5, 1, "Total:");
-	printrightw(win, "%s", bytestostr(total));
+	printrightw(win, "%s", bytestostrtotal(total));
 
 	wnoutrefresh(win);
 }
@@ -362,6 +407,7 @@ void usage(void) {
 			"-v    Version\n"
 			"-C    No colors\n"
 			"-s    Use SI units\n"
+			"-b    Use Bit/s\n"
 			"-m    Scale graph minimum\n"
 			"-g    Show global maximum\n"
 			"\n"
@@ -394,6 +440,9 @@ int main(int argc, char **argv) {
 		break;
 	case 's':
 		siunits = true;
+		break;
+	case 'b':
+		bits = true;
 		break;
 	case 'm':
 		minimum = true;
@@ -444,6 +493,9 @@ int main(int argc, char **argv) {
 		switch (key) {
 		case 's':
 			siunits = !siunits;
+			break;
+		case 'b':
+			bits = !bits;
 			break;
 		case 'm':
 			minimum = !minimum;
