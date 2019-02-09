@@ -357,7 +357,7 @@ void printgraphw(WINDOW *win, char *name, char *ifname, int color,
 	else
 		mvwprintw(win, y - 1, 1, "[ %s/s ]", bytestostr(0));
 	if (ifname)
-		printcenterw(win, "[ nbwmon-%s | interface: %s ]", VERSION, ifname);
+		printcenterw(win, "[ interface: %s ]", ifname);
 
 	wattron(win, color);
 	for (i = 0; i < (y - 2); i++) {
@@ -435,6 +435,7 @@ int main(int argc, char **argv) {
 	ARGBEGIN {
 	case 'v':
 		eprintf("nbwmon-%s\n", VERSION);
+		break;
 	case 'C':
 		colors = false;
 		break;
