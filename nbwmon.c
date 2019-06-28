@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 #define _GNU_SOURCE
 
 #ifdef __linux__
@@ -51,13 +52,14 @@ struct iface {
 
 char *argv0;
 bool colors = true;
-bool siunits = false;
-bool bits = false;
-bool minimum = false;
-bool globalmax = false;
+bool siunits;
+bool bits;
+bool minimum;
+bool globalmax;
 double delay = 1.0;
 
-unsigned long arraymax(unsigned long *array, size_t n, unsigned long max) {
+unsigned long arraymax(unsigned long *array, size_t n, unsigned long max)
+{
 	size_t i;
 
 	for (i = 0; i < n; i++)
@@ -66,7 +68,8 @@ unsigned long arraymax(unsigned long *array, size_t n, unsigned long max) {
 	return max;
 }
 
-unsigned long arraymin(unsigned long *array, size_t n) {
+unsigned long arraymin(unsigned long *array, size_t n)
+{
 	size_t i;
 	unsigned long min = ULONG_MAX;
 
@@ -76,7 +79,8 @@ unsigned long arraymin(unsigned long *array, size_t n) {
 	return min;
 }
 
-unsigned long arrayavg(unsigned long *array, size_t n) {
+unsigned long arrayavg(unsigned long *array, size_t n)
+{
 	size_t i;
 	unsigned long sum = 0;
 
@@ -86,31 +90,71 @@ unsigned long arrayavg(unsigned long *array, size_t n) {
 	return sum;
 }
 
-size_t arrayresize(unsigned long **array, size_t newsize, size_t oldsize) {
+size_t arrayresize(unsigned long **array, size_t newsize, size_t oldsize)
+{
 	unsigned long *arraytmp;
 
 	arraytmp = *array;
 	*array = ecalloc(newsize, sizeof(**array));
 
 	if (newsize > oldsize)
-		memcpy(*array + (newsize - oldsize), arraytmp, sizeof(**array) * oldsize);
+		memcpy(*array + (newsize - oldsize),
+		       arraytmp, sizeof(**array) * oldsize);
 	else
-		memcpy(*array, arraytmp + (oldsize - newsize), sizeof(**array) * newsize);
+		memcpy(*array, arraytmp + (oldsize - newsize),
+		       sizeof(**array) * newsize);
 
 	free(arraytmp);
 
 	return newsize;
 }
 
-char *bytestostr(double bytes) {
+char *bytestostr(double bytes)
+{
 	int i;
 	int cols;
 	double rxtx;
 	static char buf[32];
-	static const char iec[][4] = { "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB" };
-	static const char si[][3] = { "B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
-	static const char iecbit[][6] = { "Bit", "KiBit", "MiBit", "GiBit", "TiBit", "PiBit", "EiBit", "ZiBit", "YiBit" };
-	static const char sibit[][5] = { "Bit", "kBit", "MBit", "GBit", "TBit", "PBit", "EBit", "ZBit", "YBit" };
+	static const char iec[][4] = {
+		"B",
+		"KiB",
+		"MiB",
+		"GiB",
+		"TiB",
+		"PiB",
+		"EiB",
+		"ZiB",
+		"YiB" };
+	static const char si[][3] = {
+		"B",
+		"kB",
+		"MB",
+		"GB",
+		"TB",
+		"PB",
+		"EB",
+		"ZB",
+		"YB" };
+	static const char iecbit[][6] = {
+		"Bit",
+		"KiBit",
+		"MiBit",
+		"GiBit",
+		"TiBit",
+		"PiBit",
+		"EiBit",
+		"ZiBit",
+		"YiBit" };
+	static const char sibit[][5] = {
+		"Bit",
+		"kBit",
+		"MBit",
+		"GBit",
+		"TBit",
+		"PBit",
+		"EBit",
+		"ZBit",
+		"YBit" };
 	double prefix;
 	const char *suffix;
 
@@ -122,36 +166,53 @@ char *bytestostr(double bytes) {
 		cols = LEN(iec);
 	}
 
-	if (bits) {
+	if (bits)
 		rxtx = bytes * 8;
-	} else {
+	else
 		rxtx = bytes;
-	}
 
 	for (i = 0; rxtx >= prefix && i < cols; i++)
 		rxtx /= prefix;
 
-	if (!siunits && !bits) {
+	if (!siunits && !bits)
 		suffix = iec[i];
-	} else if (siunits && !bits) {
+	else if (siunits && !bits)
 		suffix = si[i];
-	} else if (!siunits && bits) {
+	else if (!siunits && bits)
 		suffix = iecbit[i];
-	} else if (siunits && bits) {
+	else if (siunits && bits)
 		suffix = sibit[i];
-	}
 
 	snprintf(buf, sizeof(buf), i ? "%.2f %s" : "%.0f %s", rxtx, suffix);
 
 	return buf;
 }
 
-char *bytestostrtotal(double bytes) {
+char *bytestostrtotal(double bytes)
+{
 	int i;
 	int cols;
 	static char buf[32];
-	static const char iec[][4] = { "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB" };
-	static const char si[][3] = { "B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+	static const char iec[][4] = {
+		"B",
+		"KiB",
+		"MiB",
+		"GiB",
+		"TiB",
+		"PiB",
+		"EiB",
+		"ZiB",
+		"YiB" };
+	static const char si[][3] = {
+		"B",
+		"kB",
+		"MB",
+		"GB",
+		"TB",
+		"PB",
+		"EB",
+		"ZB",
+		"YB" };
 	double prefix;
 
 	if (siunits) {
@@ -165,12 +226,14 @@ char *bytestostrtotal(double bytes) {
 	for (i = 0; bytes >= prefix && i < cols; i++)
 		bytes /= prefix;
 
-	snprintf(buf, sizeof(buf), i ? "%.2f %s" : "%.0f %s", bytes, siunits ? si[i] : iec[i]);
+	snprintf(buf, sizeof(buf), i ? "%.2f %s" : "%.0f %s",
+		 bytes, siunits ? si[i] : iec[i]);
 
 	return buf;
 }
 
-bool detectiface(char *ifname) {
+bool detectiface(char *ifname)
+{
 	bool retval = false;
 	struct ifaddrs *ifas, *ifa;
 
@@ -190,7 +253,8 @@ bool detectiface(char *ifname) {
 				continue;
 			if (ifa->ifa_flags & IFF_RUNNING) {
 				if (ifa->ifa_flags & IFF_UP) {
-					strlcpy(ifname, ifa->ifa_name, IFNAMSIZ);
+					strlcpy(ifname, ifa->ifa_name,
+						IFNAMSIZ);
 					retval = true;
 					break;
 				}
@@ -204,7 +268,9 @@ bool detectiface(char *ifname) {
 }
 
 #ifdef __linux__
-static bool getcounters(char *ifname, unsigned long long *rx, unsigned long long *tx) {
+static bool getcounters(char *ifname, unsigned long long *rx,
+			unsigned long long *tx)
+{
 	struct ifaddrs *ifas, *ifa;
 	struct rtnl_link_stats *stats = NULL;
 
@@ -213,7 +279,8 @@ static bool getcounters(char *ifname, unsigned long long *rx, unsigned long long
 
 	for (ifa = ifas; ifa; ifa = ifa->ifa_next) {
 		if (!strcmp(ifa->ifa_name, ifname)) {
-			if (!strncmp(ifname, "ppp", 3) && ifa->ifa_data != NULL) {
+			if (!strncmp(ifname, "ppp", 3) &&
+			    ifa->ifa_data != NULL) {
 				stats = ifa->ifa_data;
 				*rx = stats->rx_bytes;
 				*tx = stats->tx_bytes;
@@ -221,7 +288,8 @@ static bool getcounters(char *ifname, unsigned long long *rx, unsigned long long
 			}
 			if (ifa->ifa_addr == NULL)
 				return false;
-			if (ifa->ifa_addr->sa_family == AF_PACKET && ifa->ifa_data != NULL) {
+			if (ifa->ifa_addr->sa_family == AF_PACKET &&
+			    ifa->ifa_data != NULL) {
 				stats = ifa->ifa_data;
 				*rx = stats->rx_bytes;
 				*tx = stats->tx_bytes;
@@ -238,7 +306,9 @@ static bool getcounters(char *ifname, unsigned long long *rx, unsigned long long
 }
 
 #elif __OpenBSD__ || __NetBSD__
-static bool getcounters(char *ifname, unsigned long long *rx, unsigned long long *tx) {
+static bool getcounters(char *ifname, unsigned long long *rx,
+			unsigned long long *tx)
+{
 	int mib[6];
 	char *buf, *next;
 	size_t size;
@@ -266,7 +336,8 @@ static bool getcounters(char *ifname, unsigned long long *rx, unsigned long long
 				/* search for the right network interface */
 				if (sdl->sdl_family != AF_LINK)
 					continue;
-				if (strncmp(sdl->sdl_data, ifname, sdl->sdl_nlen) != 0)
+				if (strncmp(sdl->sdl_data, ifname,
+					    sdl->sdl_nlen) != 0)
 					continue;
 				*rx = ifm->ifm_data.ifi_ibytes;
 				*tx = ifm->ifm_data.ifi_obytes;
@@ -283,15 +354,16 @@ static bool getcounters(char *ifname, unsigned long long *rx, unsigned long long
 }
 #endif
 
-bool getdata(struct iface *ifa, int cols) {
+bool getdata(struct iface *ifa, int cols)
+{
 	static unsigned long long rx, tx;
 
 	if (rx && tx) {
 		if (!getcounters(ifa->ifname, &ifa->rx, &ifa->tx))
 			return false;
 
-		memmove(ifa->rxs, ifa->rxs+1, sizeof(ifa->rxs) * (cols - 1));
-		memmove(ifa->txs, ifa->txs+1, sizeof(ifa->txs) * (cols - 1));
+		memmove(ifa->rxs, ifa->rxs + 1, sizeof(ifa->rxs) * (cols - 1));
+		memmove(ifa->txs, ifa->txs + 1, sizeof(ifa->txs) * (cols - 1));
 
 		ifa->rxs[cols - 1] = (ifa->rx - rx) / delay;
 		ifa->txs[cols - 1] = (ifa->tx - tx) / delay;
@@ -316,7 +388,8 @@ bool getdata(struct iface *ifa, int cols) {
 	return true;
 }
 
-void printrightw(WINDOW *win, const char *fmt, ...) {
+void printrightw(WINDOW *win, const char *fmt, ...)
+{
 	va_list ap;
 	char buf[BUFSIZ];
 
@@ -327,7 +400,8 @@ void printrightw(WINDOW *win, const char *fmt, ...) {
 	mvwprintw(win, getcury(win), getmaxx(win) - 1 - strlen(buf), "%s", buf);
 }
 
-void printcenterw(WINDOW *win, const char *fmt, ...) {
+void printcenterw(WINDOW *win, const char *fmt, ...)
+{
 	va_list ap;
 	char buf[BUFSIZ];
 
@@ -339,7 +413,8 @@ void printcenterw(WINDOW *win, const char *fmt, ...) {
 }
 
 void printgraphw(WINDOW *win, char *name, char *ifname, int color,
-		unsigned long *array, unsigned long min, unsigned long max) {
+		 unsigned long *array, unsigned long min, unsigned long max)
+{
 	int y, x;
 	int i, j;
 	double height;
@@ -350,7 +425,7 @@ void printgraphw(WINDOW *win, char *name, char *ifname, int color,
 	box(win, 0, 0);
 	mvwvline(win, 0, 1, '-', y - 1);
 	if (name)
-		mvwprintw(win, 0, x - 5 - strlen(name), "[ %s ]",name);
+		mvwprintw(win, 0, x - 5 - strlen(name), "[ %s ]", name);
 	mvwprintw(win, 0, 1, "[ %s/s ]", bytestostr(max));
 	if (minimum)
 		mvwprintw(win, y - 1, 1, "[ %s/s ]", bytestostr(min));
@@ -364,9 +439,12 @@ void printgraphw(WINDOW *win, char *name, char *ifname, int color,
 		for (j = 0; j < (x - 3); j++) {
 			if (array[j] && max) {
 				if (minimum)
-					height = y - 3 - (((double) array[j] - min) / (max - min) * y);
+					height = y - 3 -
+					(((double)array[j] - min) /
+					(max - min) * y);
 				else
-					height = y - 3 - ((double) array[j] / max * y);
+					height = y - 3 -
+					((double)array[j] / max * y);
 
 				if (height < i)
 					mvwaddch(win, i + 1, j + 2, '*');
@@ -379,8 +457,9 @@ void printgraphw(WINDOW *win, char *name, char *ifname, int color,
 }
 
 void printstatsw(WINDOW *win, char *name,
-		unsigned long cur, unsigned long min, unsigned long avg,
-		unsigned long max, unsigned long long total) {
+		 unsigned long cur, unsigned long min, unsigned long avg,
+		 unsigned long max, unsigned long long total)
+{
 	werase(win);
 	box(win, 0, 0);
 	if (name)
@@ -400,8 +479,9 @@ void printstatsw(WINDOW *win, char *name,
 	wnoutrefresh(win);
 }
 
-void usage(void) {
-	eprintf("usage: %s [options]\n"
+void usage(void)
+{
+	eprintf("%s: %s [options]\n"
 			"\n"
 			"-h    Help\n"
 			"-v    Version\n"
@@ -413,10 +493,11 @@ void usage(void) {
 			"\n"
 			"-d <seconds>      Redraw delay\n"
 			"-i <interface>    Network interface\n"
-			, argv0);
+			, __func__, argv0);
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 	int y, x;
 	int oldy, oldx;
 	int graphy;
@@ -553,7 +634,8 @@ int main(int argc, char **argv) {
 		}
 
 		gettimeofday(&tv, NULL);
-		tv.tv_usec = (tv.tv_sec * 1000 + tv.tv_usec / 1000) / (delay * 1000.0);
+		tv.tv_usec = (tv.tv_sec * 1000 + tv.tv_usec / 1000) /
+			      (delay * 1000.0);
 		if (changedelay) {
 			timer = tv.tv_usec;
 			changedelay = false;
@@ -561,19 +643,24 @@ int main(int argc, char **argv) {
 		if (timer != tv.tv_usec) {
 			timer = tv.tv_usec;
 			if (!getdata(&ifa, x - 3))
-				eprintf("Can't read rx and tx bytes for %s\n", ifa.ifname);
+				eprintf("Can't read rx and tx bytes for %s\n",
+					ifa.ifname);
 			redraw = true;
 		}
 
 		if (redraw) {
-			printgraphw(rxgraph, "Received", ifa.ifname, COLOR_PAIR(1),
-					ifa.rxs, ifa.rxmin, ifa.rxmax);
-			printgraphw(txgraph, "Transmitted", NULL, COLOR_PAIR(2),
-					ifa.txs, ifa.txmin, ifa.txmax);
+			printgraphw(rxgraph, "Received", ifa.ifname,
+				    COLOR_PAIR(1),
+				    ifa.rxs, ifa.rxmin, ifa.rxmax);
+			printgraphw(txgraph, "Transmitted", NULL,
+				    COLOR_PAIR(2),
+				    ifa.txs, ifa.txmin, ifa.txmax);
 			printstatsw(rxstats, "Received",
-					ifa.rxs[x - 4], ifa.rxmin, ifa.rxavg, ifa.rxmax, ifa.rx);
+				    ifa.rxs[x - 4], ifa.rxmin, ifa.rxavg,
+				    ifa.rxmax, ifa.rx);
 			printstatsw(txstats, "Transmitted",
-					ifa.txs[x - 4], ifa.txmin, ifa.txavg, ifa.txmax, ifa.tx);
+				    ifa.txs[x - 4], ifa.txmin, ifa.txavg,
+				    ifa.txmax, ifa.tx);
 			doupdate();
 			redraw = false;
 		}

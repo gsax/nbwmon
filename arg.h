@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: MIT */
 /*
  * Copy me if you can.
  * by 20h
@@ -10,8 +11,8 @@ extern char *argv0;
 
 /* use main(int argc, char *argv[]) */
 #define ARGBEGIN	for (argv0 = *argv, argv++, argc--;\
-					argv[0] && argv[0][1]\
-					&& argv[0][0] == '-';\
+					argv[0] && argv[0][1] &&\
+					argv[0][0] == '-';\
 					argc--, argv++) {\
 				char argc_;\
 				char **argv_;\
@@ -20,7 +21,7 @@ extern char *argv0;
 					argv++;\
 					argc--;\
 					break;\
-				}\
+				} \
 				for (brk_ = 0, argv[0]++, argv_ = argv;\
 						argv[0][0] && !brk_;\
 						argv[0]++) {\
@@ -30,7 +31,7 @@ extern char *argv0;
 					switch (argc_)
 
 /* Handles obsolete -NUM syntax */
-#define ARGNUM				case '0':\
+#define ARGNUM		{case '0':\
 					case '1':\
 					case '2':\
 					case '3':\
@@ -39,24 +40,24 @@ extern char *argv0;
 					case '6':\
 					case '7':\
 					case '8':\
-					case '9'
+					case '9'}
 
-#define ARGEND			}\
+#define ARGEND			} \
 			}
 
 #define ARGC()		argc_
 
 #define ARGNUMF(base)	(brk_ = 1, estrtol(argv[0], (base)))
 
-#define EARGF(x)	((argv[0][1] == '\0' && argv[1] == NULL)?\
+#define EARGF(x)	((argv[0][1] == '\0' && !argv[1]) ? \
 				((x), abort(), (char *)0) :\
-				(brk_ = 1, (argv[0][1] != '\0')?\
+				(brk_ = 1, (argv[0][1] != '\0') ? \
 					(&argv[0][1]) :\
 					(argc--, argv++, argv[0])))
 
-#define ARGF()		((argv[0][1] == '\0' && argv[1] == NULL)?\
+#define ARGF()		((argv[0][1] == '\0' && !argv[1]) ? \
 				(char *)0 :\
-				(brk_ = 1, (argv[0][1] != '\0')?\
+				(brk_ = 1, (argv[0][1] != '\0') ? \
 					(&argv[0][1]) :\
 					(argc--, argv++, argv[0])))
 

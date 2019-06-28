@@ -1,10 +1,12 @@
+// SPDX-License-Identifier: MIT
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
 #include <ncurses.h>
 
-void eprintf(const char *fmt, ...) {
+void eprintf(const char *fmt, ...)
+{
 	va_list ap;
 
 	endwin();
@@ -14,7 +16,8 @@ void eprintf(const char *fmt, ...) {
 	exit(EXIT_FAILURE);
 }
 
-void *emalloc(size_t size) {
+void *emalloc(size_t size)
+{
 	void *p;
 
 	p = malloc(size);
@@ -23,7 +26,8 @@ void *emalloc(size_t size) {
 	return p;
 }
 
-void *ecalloc(size_t nmemb, size_t size) {
+void *ecalloc(size_t nmemb, size_t size)
+{
 	void *p;
 
 	p = calloc(nmemb, size);
@@ -32,7 +36,8 @@ void *ecalloc(size_t nmemb, size_t size) {
 	return p;
 }
 
-double estrtod(const char *str) {
+double estrtod(const char *str)
+{
 	char *ep;
 	double d;
 
@@ -42,7 +47,8 @@ double estrtod(const char *str) {
 	return d;
 }
 
-size_t strlcpy(char *dest, const char *src, size_t size) {
+size_t strlcpy(char *dest, const char *src, size_t size)
+{
 	size_t len;
 
 	len = strlen(src);

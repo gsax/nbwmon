@@ -1,7 +1,8 @@
+/* SPDX-License-Identifier: MIT */
 #ifndef UTIL_H
 #define UTIL_H
 
-#define LEN(x) (sizeof (x) / sizeof *(x))
+#define LEN(x) (sizeof(x) / sizeof *(x))
 
 void eprintf(const char *fmt, ...);
 
