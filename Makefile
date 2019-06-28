@@ -4,7 +4,7 @@
 CFLAGS += -std=c17 -pedantic -Wall -Wextra
 LDLIBS = -lncurses -ltinfo
 PREFIX = /usr/local
-MANPREFIX = $(PREFIX)/man
+MANPREFIX = $(PREFIX)/share/man
 
 BIN = nbwmon
 OBJ = nbwmon.o util.o
