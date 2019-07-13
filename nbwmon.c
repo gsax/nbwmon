@@ -101,8 +101,8 @@ size_t arrayresize(unsigned long **array, size_t newsize, size_t oldsize)
 	*array = ecalloc(newsize, sizeof(**array));
 
 	if (newsize > oldsize)
-		memcpy(*array + (newsize - oldsize),
-		       arraytmp, sizeof(**array) * oldsize);
+		memcpy(*array + (newsize - oldsize), arraytmp,
+		       sizeof(**array) * oldsize);
 	else
 		memcpy(*array, arraytmp + (oldsize - newsize),
 		       sizeof(**array) * newsize);
@@ -229,8 +229,8 @@ char *bytestostrtotal(double bytes)
 	for (i = 0; bytes >= prefix && i < cols; i++)
 		bytes /= prefix;
 
-	snprintf(buf, sizeof(buf), i ? "%.2f %s" : "%.0f %s",
-		 bytes, siunits ? si[i] : iec[i]);
+	snprintf(buf, sizeof(buf), i ? "%.2f %s" : "%.0f %s", bytes,
+		 siunits ? si[i] : iec[i]);
 
 	return buf;
 }
@@ -443,11 +443,11 @@ void printgraphw(WINDOW *win, char *name, char *ifname, int color,
 			if (array[j] && max) {
 				if (minimum)
 					height = y - 3 -
-					(((double)array[j] - min) /
-					(max - min) * y);
+						 (((double)array[j] - min) /
+						  (max - min) * y);
 				else
 					height = y - 3 -
-					((double)array[j] / max * y);
+						 ((double)array[j] / max * y);
 
 				if (height < i)
 					mvwaddch(win, i + 1, j + 2, '*');
@@ -485,18 +485,18 @@ void printstatsw(WINDOW *win, char *name,
 void usage(void)
 {
 	eprintf("%s: %s [options]\n"
-			"\n"
-			"-h    Help\n"
-			"-v    Version\n"
-			"-C    No colors\n"
-			"-s    Use SI units\n"
-			"-b    Use Bit/s\n"
-			"-m    Scale graph minimum\n"
-			"-g    Show global maximum\n"
-			"\n"
-			"-d <seconds>      Redraw delay\n"
-			"-i <interface>    Network interface\n"
-			, __func__, argv0);
+		"\n"
+		"-h    Help\n"
+		"-v    Version\n"
+		"-C    No colors\n"
+		"-s    Use SI units\n"
+		"-b    Use Bit/s\n"
+		"-m    Scale graph minimum\n"
+		"-g    Show global maximum\n"
+		"\n"
+		"-d <seconds>      Redraw delay\n"
+		"-i <interface>    Network interface\n",
+		__func__, argv0);
 }
 
 int main(int argc, char **argv)
@@ -516,7 +516,8 @@ int main(int argc, char **argv)
 
 	memset(&ifa, 0, sizeof(ifa));
 
-	ARGBEGIN {
+	ARGBEGIN
+	{
 	case 'v':
 		eprintf("nbwmon-%s\n", VERSION);
 		break;
@@ -543,7 +544,8 @@ int main(int argc, char **argv)
 		break;
 	default:
 		usage();
-	} ARGEND;
+	}
+	ARGEND;
 
 	if (!detectiface(ifa.ifname))
 		eprintf("Can't find network interface\n");
@@ -638,7 +640,7 @@ int main(int argc, char **argv)
 
 		gettimeofday(&tv, NULL);
 		tv.tv_usec = (tv.tv_sec * 1000 + tv.tv_usec / 1000) /
-			      (delay * 1000.0);
+			     (delay * 1000.0);
 		if (changedelay) {
 			timer = tv.tv_usec;
 			changedelay = false;
@@ -653,17 +655,14 @@ int main(int argc, char **argv)
 
 		if (redraw) {
 			printgraphw(rxgraph, "Received", ifa.ifname,
-				    COLOR_PAIR(1),
-				    ifa.rxs, ifa.rxmin, ifa.rxmax);
-			printgraphw(txgraph, "Transmitted", NULL,
-				    COLOR_PAIR(2),
+				    COLOR_PAIR(1), ifa.rxs, ifa.rxmin,
+				    ifa.rxmax);
+			printgraphw(txgraph, "Transmitted", NULL, COLOR_PAIR(2),
 				    ifa.txs, ifa.txmin, ifa.txmax);
-			printstatsw(rxstats, "Received",
-				    ifa.rxs[x - 4], ifa.rxmin, ifa.rxavg,
-				    ifa.rxmax, ifa.rx);
-			printstatsw(txstats, "Transmitted",
-				    ifa.txs[x - 4], ifa.txmin, ifa.txavg,
-				    ifa.txmax, ifa.tx);
+			printstatsw(rxstats, "Received", ifa.rxs[x - 4],
+				    ifa.rxmin, ifa.rxavg, ifa.rxmax, ifa.rx);
+			printstatsw(txstats, "Transmitted", ifa.txs[x - 4],
+				    ifa.txmin, ifa.txavg, ifa.txmax, ifa.tx);
 			doupdate();
 			redraw = false;
 		}
