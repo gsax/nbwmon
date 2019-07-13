@@ -15,6 +15,7 @@ Features
 Keyboard
 --------
 s = Use SI / IEC units
+b = Use Byte/s / Bit/s
 m = Scale graph minimum
 g = Show global maximum
 + = Increase redraw delay
@@ -23,10 +24,12 @@ g = Show global maximum
 Usage
 -----
 usage: ./nbwmon [options]
+
 -h    Help
 -v    Version
--C    No colors
+-C    Disable colors
 -s    Use SI units
+-b    Use Bit/s
 -m    Scale graph minimum
 -g    Show global maximum
 
