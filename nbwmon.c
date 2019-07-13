@@ -86,7 +86,10 @@ unsigned long arrayavg(unsigned long *array, size_t n)
 
 	for (i = 0; i < n; i++)
 		sum += array[i];
-	sum /= n;
+	if (n <= 0)
+		sum = 0;
+	else
+		sum /= n;
 	return sum;
 }
 
