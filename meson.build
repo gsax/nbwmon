@@ -10,3 +10,6 @@ ncursesdep = dependency('ncurses')
 executable('nbwmon',
 	   sources : src,
 	   dependencies : ncursesdep)
+
+run_target('inspector',
+	   command : 'scripts/inspect.sh')
