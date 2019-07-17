@@ -1,3 +1,10 @@
-build
-nbwmon
+# various tag files
 tags
+*.out
+G*
+
+# build folders
+build*
+
+# the executable
+nbwmon
