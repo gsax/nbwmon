@@ -4,6 +4,8 @@
 
 #define LEN(x) (sizeof(x) / sizeof *(x))
 
+#include <stdlib.h>
+
 void eprintf(const char *fmt, ...);
 
 void *emalloc(size_t size);
