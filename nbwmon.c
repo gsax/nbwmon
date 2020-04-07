@@ -365,8 +365,8 @@ bool getdata(struct iface *ifa, int cols)
 		if (!getcounters(ifa->ifname, &ifa->rx, &ifa->tx))
 			return false;
 
-		memmove(ifa->rxs, ifa->rxs + 1, sizeof(ifa->rxs) * (cols - 1));
-		memmove(ifa->txs, ifa->txs + 1, sizeof(ifa->txs) * (cols - 1));
+		memmove(ifa->rxs, ifa->rxs + 1, sizeof(*ifa->rxs) * (cols - 1));
+		memmove(ifa->txs, ifa->txs + 1, sizeof(*ifa->txs) * (cols - 1));
 
 		ifa->rxs[cols - 1] = (ifa->rx - rx) / delay;
 		ifa->txs[cols - 1] = (ifa->tx - tx) / delay;
