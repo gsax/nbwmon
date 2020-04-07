@@ -1,7 +1,7 @@
 # On NetBSD you need to install ncurses and
 # add -I/usr/pkg/include and -L/usr/pkg/lib to the options
 # below.
-CFLAGS += -std=c17 -pedantic -Wall -Wextra
+CFLAGS += -std=c18 -pedantic -Wall -Wextra
 LDLIBS = -lncurses -ltinfo
 PREFIX = /usr/local
 MANPREFIX = $(PREFIX)/share/man
