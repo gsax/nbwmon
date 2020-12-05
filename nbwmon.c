@@ -283,16 +283,16 @@ static bool getcounters(char *ifname, unsigned long long *rx,
 	for (ifa = ifas; ifa; ifa = ifa->ifa_next) {
 		if (!strcmp(ifa->ifa_name, ifname)) {
 			if (!strncmp(ifname, "ppp", 3) &&
-			    ifa->ifa_data != NULL) {
+			    ifa->ifa_data) {
 				stats = ifa->ifa_data;
 				*rx = stats->rx_bytes;
 				*tx = stats->tx_bytes;
 				break;
 			}
-			if (ifa->ifa_addr == NULL)
+			if (!ifa->ifa_addr)
 				return false;
 			if (ifa->ifa_addr->sa_family == AF_PACKET &&
-			    ifa->ifa_data != NULL) {
+			    ifa->ifa_data) {
 				stats = ifa->ifa_data;
 				*rx = stats->rx_bytes;
 				*tx = stats->tx_bytes;
@@ -365,8 +365,8 @@ bool getdata(struct iface *ifa, int cols)
 		if (!getcounters(ifa->ifname, &ifa->rx, &ifa->tx))
 			return false;
 
-		memmove(ifa->rxs, ifa->rxs + 1, sizeof(*ifa->rxs) * (cols - 1));
-		memmove(ifa->txs, ifa->txs + 1, sizeof(*ifa->txs) * (cols - 1));
+		memmove(ifa->rxs, ifa->rxs + 1, sizeof(ifa->rxs) * (cols - 1));
+		memmove(ifa->txs, ifa->txs + 1, sizeof(ifa->txs) * (cols - 1));
 
 		ifa->rxs[cols - 1] = (ifa->rx - rx) / delay;
 		ifa->txs[cols - 1] = (ifa->tx - tx) / delay;
